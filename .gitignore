@@ -9,7 +9,8 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
-
+/Gemfile.lock/
+/recommendation_api/venv
 # Used by dotenv library to load environment variables.
 # .env
 
@@ -54,3 +55,19 @@ build-iPhoneSimulator/
 
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
 # .rubocop-https?--*
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
+storage/development.sqlite3
+
+/config/credentials/development.key
+public/assets/*
+log/development.log
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+/config/credentials/production.key

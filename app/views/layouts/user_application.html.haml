@@ -1,0 +1,34 @@
+%html
+  %head
+  %title Freshly
+  %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
+  = csrf_meta_tags
+  = csp_meta_tag
+  = javascript_pack_tag 'application'
+  = stylesheet_link_tag "application", "data-turbo-track" => "reload"
+  = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track" => "reload"
+  = stylesheet_link_tag "notifier/hidden"
+  %script{src: "https://code.jquery.com/jquery-3.6.0.min.js"}
+  %script{src: "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"}
+  %script{src: "https://unpkg.com/@zxing/library@latest"}
+  %link{rel: "stylesheet", href: "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"}
+  %link{href: "https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css", rel: "stylesheet", type: "text/css"}
+  
+  = yield :head
+
+  %link{href: "https://cdn.materialdesignicons.com/7.4.47/css/materialdesignicons.min.css", rel: "stylesheet"}
+  %link{href: "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap", rel: "stylesheet"}
+
+  = javascript_importmap_tags
+
+  %body.w-screen.h-screen.flex.flex-col.overflow-hidden
+    = render "partials/notifier/success_notifier"
+    = render "partials/notifier/error_notifier"
+    = render "partials/layout/header"
+    %main.flex.flex-col.flex-1.overflow-y-auto.overflow-x-hidden.min-h-0
+      .flex-1
+        = content_for?(:content) ? yield(:content) : yield
+      = render "partials/layout/footer"
+    - if current_user.present? and current_user.has_membership?
+      = render "partials/chat_bot"
+    = render "partials/layout/mobile_nav"

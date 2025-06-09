@@ -1,0 +1,58 @@
+.container.mx-auto.p-4.max-w-2xl.flex.flex-col.gap-6
+  .bg-white.rounded-lg.shadow-md.w-full.p-8.space-y-4
+    %div
+      .flex.flex-row
+        %img.size-32.rounded-full.mr-6{ src: @user.profile_picture_url }
+        .flex.flex-col.min-w-0.flex-1
+          .flex.items-center.gap-1
+            %h2.text-lg.text-slate-600.truncate
+              = "@#{@user.login.username}"
+            - if @user.has_membership?
+              %p.text-blue-500
+                • Plus member
+          - if @user.full_name.present? then
+            %h1.text-xl.line-clamp-2
+              #{@user.full_name}
+          - if @user.country.present?
+            %span.line-clamp-2
+              = @user.country + if @user.city.present? then ", #{@user.city}" else "" end
+          - if @user.bio.present? then
+            %p.line-clamp-3
+            = @user.bio
+          .flex.items-center.gap-2
+            %span
+              Level: #{@user.level}
+            %progress{value: @user.level_f - @user.level, max: 1, class: "progress progress-primary flex-1"}
+    .flex.justify-evenly
+      = link_to user_hub_user_followers_path(@user), class: "flex flex-col align-center" do
+        %span.text-center.text-lg
+          = @user.followers.length
+        %span.text-sm
+          Followers
+      = link_to user_hub_user_following_path(@user), class: "flex flex-col align-center" do
+        %span.text-center.text-lg
+          = @user.following.length
+        %span.text-sm
+          Following
+    - if current_user.present?
+      - if current_user == @user
+        %button.follow-btn.bg-slate-600.rounded-lg.w-full.text-white.py-1{href: user_user_profile_path}
+          Update profile
+      - elsif current_user.following?(@user)
+        %button.follow-btn.bg-slate-600.rounded-lg.w-full.text-white.py-1{href: user_hub_user_follow_url(@user)}
+          Unfollow
+      - else
+        %button.follow-btn.bg-primary-400.rounded-lg.w-full.text-white.py-1{href: user_hub_user_follow_url(@user)}
+          Follow
+  %h1.text-2xl
+    = "Posts (#{@user.posts.top_level.length})"
+  - @user.posts.top_level.newest_first.each do |post|
+    = render '/user/hub/posts/post', post: post
+
+:javascript
+  {
+    const btn = document.querySelector('.follow-btn')
+    btn.addEventListener('click', () => {
+      location.replace(btn.getAttribute('href'))
+    })
+  }
